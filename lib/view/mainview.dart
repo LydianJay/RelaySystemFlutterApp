@@ -25,6 +25,9 @@ class _MainViewState extends State<MainView> {
     prefs.then((value) => {
           textContent.text = value.getString('ip') ?? '192.168.4.1',
         });
+    prefs.then((value) => {
+          ctrlLimit.text = value.getString('limit') ?? '1500',
+        });
   }
 
   void messageReceived(String msg) {
@@ -43,6 +46,10 @@ class _MainViewState extends State<MainView> {
 
     if (await socketConnection.canConnect(5000, attempts: 3)) {
       await socketConnection.connect(5000, messageReceived, attempts: 3);
+    }
+
+    if (socketConnection.isConnected()) {
+      socketConnection.sendMessage(ctrlLimit.text);
     }
     return socketConnection.isConnected();
   }
